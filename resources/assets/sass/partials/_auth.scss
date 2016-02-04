@@ -1,0 +1,33 @@
+.auth-page {
+    background-color: #2F3238;
+}
+
+.auth-form {
+    max-width: 350px;
+    margin: 220px auto;
+    
+    .input-group {
+        margin-top: 10px;
+
+        .input-group-addon {
+            background-color: #00B5B5;
+            border: none;
+            font-size: 1.5em;
+            color: #fff;
+        }
+
+        input {
+            border: none;
+            box-shadow: none;
+            outline: none;
+        }
+    }
+
+    input[type="submit"] {
+        margin-top: 10px;
+    }
+
+    .checkbox > label {
+        color: #eee;
+    }
+}
