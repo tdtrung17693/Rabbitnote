@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
+use App\Http\Requests\NoteRequest;
 use App\Notes\Note;
 use App\Notes\NotesRepository;
 use Illuminate\Contracts\Auth\Guard;
@@ -33,15 +34,11 @@ class NotesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(NoteRequest $request)
     {
-        $noteData = $request->get('note');
+        $noteData = $request->all();
 
-        try {
-            $note = $this->notes->getNoteOfUserById($noteData['id'], $this->user);
-        } catch (ModelNotFoundException $e) {
-            $note = new Note();
-        }
+        $note = new Note();
 
         $note->title = $noteData['title'];
         $note->content = $noteData['content'];
@@ -68,7 +65,7 @@ class NotesController extends Controller
      */
     public function edit($id)
     {
-        //
+        
     }
 
     /**
@@ -92,9 +89,13 @@ class NotesController extends Controller
     public function destroy($id)
     {
         try {
-            return response(['deleted' => $this->notes->trashNoteOfUserById($id, $this->user)]);
+            $note = $this->getNoteOfUser($id, $this->user);
+
+            return response(['deleted' => $this->notes->trashNote($note)]);
         } catch (ModelNotFoundException $e) {
             return abort(400, 'Cannot delete this note');
+        } catch (HttpException $e) {
+            return abort(403, 'Not authorized to perform this action');
         }
     }
 }

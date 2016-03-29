@@ -25,9 +25,8 @@ class NotesRepository
         return $user->notes()->save($note);
     }
 
-    public function trashNoteOfUserById($id, User $user)
+    public function trashNote(Note $note)
     {
-        $note = $user->notes()->findOrFail($id);
         return $note->delete();
     }
 }

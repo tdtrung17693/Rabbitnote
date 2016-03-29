@@ -29,8 +29,6 @@ use Symfony\Component\HttpFoundation\Response as HttpResponse;
 Route::group(['middleware' => 'web'], function () {
     Route::auth();
 
-
-
     Route::get('/', 'HomeController@index');
 
     Route::get('/app', ['as' => 'notes.app', 'uses' => 'NotesController@index']);
@@ -47,13 +45,21 @@ Route::group(['middleware' => 'web'], function () {
 Route::post('/signin', function () {
     $credentials = Request::only('email', 'password');
 
-    if (! $token = JWTAuth::attempt($credentials)) {
-        return Response::json(false, HttpResponse::HTTP_UNAUTHORIZED);
+    try {
+        if (! $token = JWTAuth::attempt($credentials)) {
+            return response()->json(false, HttpResponse::HTTP_UNAUTHORIZED);
+        }
+    } catch (JWTException $e) {
+        return response()->json(['error' => 'could not create token'], HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
     }
 
-    return Response::json(compact('token'));
+    return response()->json(compact('token'));
 });
 
 Route::group(['prefix' => 'api', 'middleware' => ['api', 'jwt.auth']], function () {
     Route::resource('notes', 'Api\NotesController');
+});
+
+Route::get('test', function () {
+    return view('test');
 });

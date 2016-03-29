@@ -1,10 +1,10 @@
 <template lang="jade">
 
 .main-content
-    input.note-title(type='text', v-model='currentNote.title', @input="saveNote")
+    input.note-title(type="text", v-model="currentNote.title", @input="saveNote")
 
-    .note-editor-wrap(action='')
-        textarea.note-editor(name='note-text', v-model='currentNote.content', @input='saveNote')
+    .note-editor-wrap
+        textarea.note-editor(name="note-text", v-model="currentNote.content", @input="saveNote")
 
 
 </template>
@@ -41,7 +41,7 @@
 </style>
 
 <script>
-
+import io from '../../socket';
 var updateTimeout = 0;
 
 export default {
@@ -56,11 +56,11 @@ export default {
             clearTimeout(updateTimeout);
 
             updateTimeout = setTimeout(() => {
-                window.socket.emit('new_note', { _key: window.key, data: this.currentNote }, (confirmation) => {
-                    if (confirmation) {
-                        this.$dispatch('note_updated');
-                    }
-                });
+                if (this.currentNote.id !== null) {
+                    this.$dispatch('note-changed');
+                } else {
+                    this.$dispatch('create-note');
+                }
             }, 700);
         }
     }

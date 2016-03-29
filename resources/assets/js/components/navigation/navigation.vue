@@ -11,10 +11,10 @@ nav.navbar.navbar-light.navbar-app
     a.navbar-brand Rabbitnote
     ul.nav.navbar-nav.pull-md-right
         li.nav-item.dropdown
-            a.nav-link.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-haspopup='true', aria-expanded='false')
+            a.nav-link.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-haspopup='true', aria-expanded='false') {{ user.email }}
             .dropdown-menu
-                a.dropdown-item Settings
-                a.dropdown-item Logout
+                a.dropdown-item Settings 
+                a.dropdown-item(href="/auth/logout") Logout
 
 
 </template>
@@ -62,6 +62,14 @@ export default {
         notes: {
             twoWay: true
         }
+    },
+    data() {
+        return {
+            user: {}
+        }
+    },
+    ready: function () {
+        this.user = JSON.parse(window.user);
     },
     methods: {
         newNote: function ($event) {

@@ -23,6 +23,7 @@ export default {
         return {
             notes: [],
             currentNote: {
+                id: '',
                 title: '',
                 content: ''
             }
@@ -30,17 +31,27 @@ export default {
     },
 
     events: {
-        'note_updated': function () {
+        'note_saved': function () {
             this.getAllNotes();
+        },
+        'note-changed': function () {
+            this.$http
+                .post('/api/notes', this.currentNote)
+                .then((response) => {
+                    console.log(response);
+                });
         }
     },
 
     methods: {
         getAllNotes: function () {
-            this.$http.get('/api/notes', (response) => {
-                this.notes = response;
-                this.currentNote = response[0];
-            });
+            this.$http
+                .get('/api/notes')
+                .then(function (response) {
+                    console.log(response);
+                    this.notes = response;
+                    this.currentNote = response[0];
+                });
         }
     },
 

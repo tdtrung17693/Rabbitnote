@@ -20,7 +20,7 @@
         <script src="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/js/bootstrap.js"></script>
         <script>
         var key = '{{ \JWTAuth::fromUser(\Auth::user()) }}';
-        console.log(key);
+        var user = '{!! json_encode(\Auth::user()) !!}';
         </script>
         <script src="/js/vendor.bundle.js"></script>
         <script src="/js/build.js"></script>
