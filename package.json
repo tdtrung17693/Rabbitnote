@@ -35,5 +35,7 @@
     "vue": "^1.0.16",
     "vue-resource": "^0.7.0"
   },
-  "postinstall": "gulp --production && webpack --config ./resources/assets/js/config/webpack.config.js"
+  "scripts": {
+    "postinstall": "gulp --production && webpack --config ./resources/assets/js/config/webpack.config.js"
+  }
 }
