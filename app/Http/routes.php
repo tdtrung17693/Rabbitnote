@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\Response as HttpResponse;
 */
 
 
-Route::group(['middleware' => 'web'], function () {
+Route::group(['middleware' => ['web']], function () {
     Route::auth();
 
     Route::get('/', 'HomeController@index');
@@ -42,24 +42,28 @@ Route::group(['middleware' => 'web'], function () {
     });
 });
 
-Route::post('/signin', function () {
-    $credentials = Request::only('email', 'password');
+$api = app('Dingo\Api\Routing\Router');
 
-    try {
-        if (! $token = JWTAuth::attempt($credentials)) {
-            return response()->json(false, HttpResponse::HTTP_UNAUTHORIZED);
+$api->version('v1', ['middleware' => 'api.throttle', 'limit' => 100, 'expires' => 5], function ($api) {
+    $api->post('auth', function () {
+        $credentials = Request::only('email', 'password');
+
+        try {
+            if (! $token = JWTAuth::attempt($credentials)) {
+                return response()->json(false, HttpResponse::HTTP_UNAUTHORIZED);
+            }
+        } catch (JWTException $e) {
+            return response()->json(['error' => 'could not create token'], HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
-    } catch (JWTException $e) {
-        return response()->json(['error' => 'could not create token'], HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
-    }
 
-    return response()->json(compact('token'));
-});
+        return response()->json(compact('token'));
+    });
 
-Route::group(['prefix' => 'api', 'middleware' => ['api', 'jwt.auth']], function () {
-    Route::resource('notes', 'Api\NotesController');
-});
+    $api->get('/', function () {
+        return response()->json('Rabbitnote API');
+    });
 
-Route::get('test', function () {
-    return view('test');
+    $api->group(['prefix' => 'users/{user}', 'namespace' => '\App\Http\Controllers\Api'], function ($api) {
+        $api->resource('notes', 'NotesController');
+    });
 });

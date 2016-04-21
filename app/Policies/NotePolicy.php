@@ -2,6 +2,8 @@
 
 namespace App\Policies;
 
+use App\Notes\Note;
+use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class NotePolicy

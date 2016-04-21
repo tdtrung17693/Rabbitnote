@@ -1,10 +1,10 @@
 <template lang="jade">
 
 .main-content
-    input.note-title(type="text", v-model="currentNote.title", @input="saveNote")
+    input.note-title(name="note-title", type="text", v-model="currentNote.title", v-el:title-input, @input="saveNote")
 
     .note-editor-wrap
-        textarea.note-editor(name="note-text", v-model="currentNote.content", @input="saveNote")
+        textarea.note-editor(name="note-text", v-model="currentNote.content", v-el:content-input, @input="saveNote")
 
 
 </template>
@@ -42,6 +42,8 @@
 
 <script>
 import io from '../../socket';
+import event from '../../eventbus';
+
 var updateTimeout = 0;
 
 export default {
@@ -51,17 +53,27 @@ export default {
         }
     },
 
+    ready() {
+        event.on('make-new-note', () => {
+           this.$els.titleInput.focus();
+        });
+    },
+
     methods: {
         saveNote() {
+            if (this.currentNote.content.length <= 0) {
+                return;
+            }
+
             clearTimeout(updateTimeout);
 
             updateTimeout = setTimeout(() => {
                 if (this.currentNote.id !== null) {
                     this.$dispatch('note-changed');
                 } else {
-                    this.$dispatch('create-note');
+                    this.$dispatch('save-new-note');
                 }
-            }, 700);
+            }, 1000);
         }
     }
 }

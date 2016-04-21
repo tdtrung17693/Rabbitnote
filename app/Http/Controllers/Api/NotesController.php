@@ -7,25 +7,37 @@ use App\Http\Requests;
 use App\Http\Requests\NoteRequest;
 use App\Notes\Note;
 use App\Notes\NotesRepository;
+use Dingo\Api\Routing\Helpers;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use App\Notes\NoteTransformer;
 
 class NotesController extends Controller
 {
+    use Helpers;
+
     public function __construct(NotesRepository $notes, Guard $guard)
     {
+        $this->middleware('api.auth');
+
         $this->notes = $notes;
-        $this->user = $guard->user();
+        $this->user = \JWTAuth::parseToken()->toUser();
     }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($userId)
     {
-        return $this->notes->getNotesOfUser($this->user);
+        if ((int) $userId !== $this->user->id) {
+            return $this->response->errorForbidden();
+        }
+
+        $notes = $this->notes->getNotesOfUser($this->user);
+
+        return $this->response->collection($notes, NoteTransformer::class);
     }
 
     /**
@@ -34,7 +46,7 @@ class NotesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(NoteRequest $request)
+    public function store(NoteRequest $request, $userId)
     {
         $noteData = $request->all();
 
@@ -58,17 +70,6 @@ class NotesController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -77,7 +78,26 @@ class NotesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try {
+            $note = $this->notes->getNoteOfUserById($id, $this->user);
+
+            if ( !$this->user->can('change', $note) ) {
+                return abort(403, 'Not authorized to perform this action');
+            }
+
+            $note->title = $request->get('title');
+            $note->content = $request->get('content');
+
+            if ( !$note->save() ) {
+                return response()->json(['success' => false, 'message' => 'Cannot save this note.']);
+            }
+
+            return response()->json(['success' => true, 'message' => 'Note saved.']);
+        } catch (ModelNotFoundException $e) {
+            return abort(400, 'Cannot delete this note');
+        } catch (HttpException $e) {
+            return abort(403, 'Not authorized to perform this action');
+        }
     }
 
     /**
@@ -89,7 +109,7 @@ class NotesController extends Controller
     public function destroy($id)
     {
         try {
-            $note = $this->getNoteOfUser($id, $this->user);
+            $note = $this->notes->getNoteOfUserById($id, $this->user);
 
             return response(['deleted' => $this->notes->trashNote($note)]);
         } catch (ModelNotFoundException $e) {

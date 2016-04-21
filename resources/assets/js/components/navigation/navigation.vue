@@ -53,6 +53,8 @@ nav.navbar.navbar-light.navbar-app
 </style>
 
 <script>
+import event from '../../eventbus';
+import io from '../../socket';
 
 export default {
     props: {
@@ -68,7 +70,7 @@ export default {
             user: {}
         }
     },
-    ready: function () {
+    ready() {
         this.user = JSON.parse(window.user);
     },
     methods: {
@@ -84,10 +86,12 @@ export default {
             this.notes.unshift(note);
 
             this.currentNote = note;
+
+            event.emit('make-new-note');
         },
         trashNote: function (note, $event) {
             $event.preventDefault();
-            window.socket.emit('trash_note', { _key: window.key, data: this.currentNote });
+            
         }
     }
 }

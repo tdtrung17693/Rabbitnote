@@ -13,7 +13,7 @@ class NoteRequest extends Request
      */
     public function authorize()
     {
-        return \Auth::check();
+        return \JWTAuth::parseToken()->authenticate();
     }
 
     /**

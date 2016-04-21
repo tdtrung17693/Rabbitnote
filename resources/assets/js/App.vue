@@ -36,9 +36,16 @@ export default {
         },
         'note-changed': function () {
             this.$http
+                .put('/api/notes/' + this.currentNote.id, this.currentNote)
+                .then((response) => {
+                    this.getAllNotes();
+                });
+        },
+        'save-new-note': function () {
+            this.$http
                 .post('/api/notes', this.currentNote)
                 .then((response) => {
-                    console.log(response);
+                    this.getAllNotes();
                 });
         }
     },
@@ -48,9 +55,8 @@ export default {
             this.$http
                 .get('/api/notes')
                 .then(function (response) {
-                    console.log(response);
-                    this.notes = response;
-                    this.currentNote = response[0];
+                    this.notes = response.data;
+                    this.currentNote = (this.currentNote.title.length > 0) ? this.currentNote : response.data[0];
                 });
         }
     },
