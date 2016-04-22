@@ -26,6 +26,7 @@
     "bootstrap-sass": "^3.0.0",
     "express": "^4.13.4",
     "express-rate-limit": "^2.1.0",
+    "gulp": "^3.8.8",
     "ioredis": "^1.14.0",
     "laravel-elixir": "^4.0.0",
     "limiter": "^1.1.0",
@@ -34,5 +35,8 @@
     "socket.io": "^1.4.5",
     "vue": "^1.0.16",
     "vue-resource": "^0.7.0"
-  }
+  },
+  "scripts": {
+    "postinstall": "gulp"
+   }
 }
