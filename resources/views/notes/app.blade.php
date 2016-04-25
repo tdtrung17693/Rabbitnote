@@ -8,7 +8,7 @@
 
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/css/bootstrap.css">
-        <link rel="stylesheet" href="{{ elixir('/css/main.css') }}">
+        <link rel="stylesheet" href="{{ elixir('css/main.css') }}">
     </head>
     <body>
 

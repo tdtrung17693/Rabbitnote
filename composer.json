@@ -10,8 +10,9 @@
         "predis/predis": "^1.0",
         "tymon/jwt-auth": "^0.5.9",
         "asm89/stack-cors": "dev-master as 0.2.2",
-        "barryvdh/laravel-cors": "^0.7.3",
-        "dingo/api": "1.0.*@dev"
+        "barryvdh/laravel-cors": "^0.8.0",
+        "dingo/api": "1.0.*@dev",
+        "behat/behat": "^3.1"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

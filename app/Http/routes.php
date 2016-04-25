@@ -44,7 +44,7 @@ Route::group(['middleware' => ['web']], function () {
 
 $api = app('Dingo\Api\Routing\Router');
 
-$api->version('v1', ['middleware' => 'api.throttle', 'limit' => 100, 'expires' => 5], function ($api) {
+$api->version('v1', ['middleware' => ['api.throttle', 'cors'], 'limit' => 100, 'expires' => 5], function ($api) {
     $api->post('auth', function () {
         $credentials = Request::only('email', 'password');
 
@@ -66,4 +66,6 @@ $api->version('v1', ['middleware' => 'api.throttle', 'limit' => 100, 'expires' =
     $api->group(['prefix' => 'users/{user}', 'namespace' => '\App\Http\Controllers\Api'], function ($api) {
         $api->resource('notes', 'NotesController');
     });
+
+    $api->get('user', '\App\Http\Controllers\Api\UsersController@index');
 });

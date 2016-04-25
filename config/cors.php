@@ -17,9 +17,9 @@ return [
     'allowedMethods' => ['GET', 'POST', 'PUT',  'DELETE'],
     'exposedHeaders' => [],
     'maxAge' => 0,
-    'hosts' => [],
+    'hosts' => ['*'],
     'paths' => [
-           'api/*' => [
+           '*.rabbitnote.dev' => [
                'allowedOrigins' => ['*'],
                'allowedHeaders' => ['*'],
                'allowedMethods' => ['*'],

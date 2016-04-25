@@ -22,7 +22,6 @@ class NotesController extends Controller
         $this->middleware('api.auth');
 
         $this->notes = $notes;
-        $this->user = \JWTAuth::parseToken()->toUser();
     }
     /**
      * Display a listing of the resource.
