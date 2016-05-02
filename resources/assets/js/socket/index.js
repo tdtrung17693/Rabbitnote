@@ -1,6 +1,6 @@
-import Socket from 'socket.io-client';
+// import Socket from 'socket.io-client';
 
-var socketUrl = 'https://rabbitnote.herokuapp.com:3000';
-var io = new Socket(socketUrl);
+// var socketUrl = 'http://rabbitnote.dev:3000';
+// var io = new Socket(socketUrl);
 
-export default io;
+// export default io;

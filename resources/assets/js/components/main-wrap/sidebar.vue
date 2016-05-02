@@ -2,7 +2,7 @@
 
 .sidebar
     ul.list.note-list
-        li.note(v-for="note in notes", @click="openNote(note)")
+        li.note(v-for="note in state.notes", @click="openNote(note)")
             a(href='#')
                 | {{ note.title | preview 30 }}
                 small.note-excerpt {{ note.content | preview 30 }}
@@ -50,16 +50,19 @@
 </style>
 
 <script>
+import store from '../../store';
+
 
 export default {
     props: {
-        'notes': null,
         'currentNote': {
             twoWay: true
         }
     },
-    ready() {
-        console.log(this.notes);
+    data() {
+        return {
+            state: store.state
+        };
     },
     methods: {
         openNote(note) {

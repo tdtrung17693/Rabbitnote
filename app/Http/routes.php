@@ -50,7 +50,7 @@ $api->version('v1', ['middleware' => ['api.throttle', 'cors'], 'limit' => 100, '
 
         try {
             if (! $token = JWTAuth::attempt($credentials)) {
-                return response()->json(false, HttpResponse::HTTP_UNAUTHORIZED);
+                return response()->json(['error' => 'Bad credentials'], HttpResponse::HTTP_UNAUTHORIZED);
             }
         } catch (JWTException $e) {
             return response()->json(['error' => 'could not create token'], HttpResponse::HTTP_INTERNAL_SERVER_ERROR);
@@ -58,6 +58,8 @@ $api->version('v1', ['middleware' => ['api.throttle', 'cors'], 'limit' => 100, '
 
         return response()->json(compact('token'));
     });
+
+    $api->delete('auth', ['middleware' => 'api.auth', 'uses' => 'App\Http\Controllers\Api\UsersController@logout']);
 
     $api->get('/', function () {
         return response()->json('Rabbitnote API');

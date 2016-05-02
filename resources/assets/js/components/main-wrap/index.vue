@@ -1,7 +1,7 @@
 <template lang="jade">
 
 .container-fluid.main-wrap
-    sidebar(:notes='notes', :current-note.sync='currentNote')
+    sidebar(:current-note.sync='currentNote')
     main-content(:current-note.sync='currentNote')
 
 </template>
@@ -13,9 +13,6 @@ import mainContent from './mainContent.vue';
 export default {
     props: {
         currentNote: {
-            twoWay: true
-        },
-        notes: {
             twoWay: true
         }
     },

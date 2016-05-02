@@ -20,6 +20,7 @@ class NotesController extends Controller
     public function __construct(NotesRepository $notes, Guard $guard)
     {
         $this->middleware('api.auth');
+        // $this->middleware('jwt.refresh');
 
         $this->notes = $notes;
     }
@@ -91,7 +92,7 @@ class NotesController extends Controller
                 return response()->json(['success' => false, 'message' => 'Cannot save this note.']);
             }
 
-            return response()->json(['success' => true, 'message' => 'Note saved.']);
+            return $this->response->item($note, new NoteTransformer);
         } catch (ModelNotFoundException $e) {
             return abort(400, 'Cannot delete this note');
         } catch (HttpException $e) {

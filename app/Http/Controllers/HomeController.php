@@ -9,10 +9,6 @@ class HomeController extends Controller
 {
     public function index()
     {
-        if (\Auth::check()) {
-            return redirect()->route('notes.app');
-        }
-
-        return view('notes.index');
+        return view('notes.app');
     }
 }

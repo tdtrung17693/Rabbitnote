@@ -14,10 +14,58 @@ nav.navbar.navbar-light.navbar-app
             a.nav-link.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-haspopup='true', aria-expanded='false') {{ user.email }}
             .dropdown-menu
                 a.dropdown-item Settings 
-                a.dropdown-item(href="/auth/logout") Logout
+                a.dropdown-item(@click.prevent="logout") Logout
 
 
 </template>
+
+<script>
+import event from '../../eventbus';
+import io from '../../socket';
+import store from '../../store';
+
+export default {
+    props: {
+        currentNote: {
+            twoWay: true
+        },
+        notes: {
+            twoWay: true
+        }
+    },
+    data() {
+        return {
+            user: store.state.user
+        }
+    },
+    methods: {
+        newNote: function ($event) {
+            $event.preventDefault();
+
+            var note = {
+                id: null,
+                title: '',
+                content: ''
+            };
+
+            this.notes.unshift(note);
+
+            this.currentNote = note;
+
+            event.emit('make-new-note');
+        },
+        
+        trashNote: function (note, $event) {
+            $event.preventDefault();
+        },
+
+        logout() {
+            this.$dispatch('user:logout');
+        }
+    }
+}
+
+</script>
 
 <style lang="sass">
 @import "../../../sass/partials/_vars";
@@ -51,49 +99,3 @@ nav.navbar.navbar-light.navbar-app
 }
 
 </style>
-
-<script>
-import event from '../../eventbus';
-import io from '../../socket';
-
-export default {
-    props: {
-        currentNote: {
-            twoWay: true
-        },
-        notes: {
-            twoWay: true
-        }
-    },
-    data() {
-        return {
-            user: {}
-        }
-    },
-    ready() {
-        this.user = JSON.parse(window.user);
-    },
-    methods: {
-        newNote: function ($event) {
-            $event.preventDefault();
-
-            var note = {
-                id: null,
-                title: '',
-                content: ''
-            };
-
-            this.notes.unshift(note);
-
-            this.currentNote = note;
-
-            event.emit('make-new-note');
-        },
-        trashNote: function (note, $event) {
-            $event.preventDefault();
-            
-        }
-    }
-}
-
-</script>
