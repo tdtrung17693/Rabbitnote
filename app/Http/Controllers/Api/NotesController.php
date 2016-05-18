@@ -76,10 +76,10 @@ class NotesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $userId, $noteId)
     {
         try {
-            $note = $this->notes->getNoteOfUserById($id, $this->user);
+            $note = $this->notes->getNoteOfUserById($noteId, $this->user);
 
             if ( !$this->user->can('change', $note) ) {
                 return abort(403, 'Not authorized to perform this action');

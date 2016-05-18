@@ -20,16 +20,31 @@ export default {
 					this.state.user.email = response.data.data.email;
 
 					this.state.notes = response.data.data.notes.data;
-					
+
 					response.data.data.notes.data.forEach(note => {
-						this._cache[note.id] = note
+						this._cache[note.id] = note;
 					});
 
 					return response;
-				}, response => {
-					return Promise.reject(response);
+				}, error => {
+					return Promise.reject(error);
 				});
 	},
+    syncNotes() {
+        return Vue.http.get(`users/${this.state.user.id}/notes`)
+                .then(response => {
+                    this.state.notes = response.data.data;
+
+                    response.data.data.forEach(note => {
+						this._cache[note.id] = note
+					});
+
+                    return response;
+                })
+                .catch(error => {
+                    return Promise.reject(error);
+                });
+    },
 	login(email, password) {
 		return Vue.http.post('auth', {email, password});
 	},
@@ -46,10 +61,10 @@ export default {
 		Vue.http.put(`users/${this.state.user.id}/notes/${id}`, data)
 				.then(response => {
 					let note = response.data;
-					
-					let noteIdx = this.notes.indexOf( this._cache[ note.id ] );
 
-					this.notes.splice(noteIdx, 1);
+					let noteIdx = this.state.notes.indexOf( this._cache[ note.id ] );
+
+					this.state.notes.splice(noteIdx, 1);
 
 					this._cache[ note.id ] = note;
 				});

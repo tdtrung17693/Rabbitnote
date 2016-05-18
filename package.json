@@ -38,7 +38,7 @@
     "vue-router": "^0.7.13"
   },
   "scripts": {
-    "postinstall": "gulp && webpack --config ./resources/assets/js/config/webpack.config.js",
-    "start": "node server.js"
+    "build": "gulp && webpack --config ./resources/assets/js/config/webpack.config.js",
+    "start": "node server.js 1 > /dev/null &"
   }
 }

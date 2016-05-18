@@ -13,7 +13,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        \App\Notes\Note::updated(function ($note) {
+            event(new \App\Events\SomeEvent( \JWTAuth::parseToken()->toUser() ));
+        });
     }
 
     /**

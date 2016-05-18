@@ -1,7 +1,5 @@
 #!bin/bash
 
-if [ "$PHP_DEPLOYMENT" == "true" ]; then
-  bundle exec rails server -p $PORT
-else
+if [ "$NODE_DEPLOYMENT" == "true" ]; then
   node server.js
 fi

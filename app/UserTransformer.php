@@ -9,7 +9,7 @@ class UserTransformer extends TransformerAbstract
 	protected $availableIncludes = [
 		'notes'
 	];
-	
+
 	public function transform(User $user)
 	{
 		return [
@@ -21,8 +21,8 @@ class UserTransformer extends TransformerAbstract
 
 	public function includeNotes(User $user)
 	{
-		$notes = $user->notes;
-		
+		$notes = $user->notes()->latest()->get();
+
 		return $this->collection($notes, new NoteTransformer);
 	}
-} 
+}

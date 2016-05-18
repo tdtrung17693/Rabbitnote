@@ -10,7 +10,6 @@ Vue.http.options.root = "http://api.rabbitnote.dev";
 
 Vue.http.headers.common['Accept'] = 'application/x.notes.v1+json';
 
-
 Vue.http.interceptors.push({
 	request(r) {
 		let token = '',
@@ -25,11 +24,11 @@ Vue.http.interceptors.push({
 
 				return Promise.resolve(r);
 			})
-			.catch(() => console.log('false'));
+			.catch(() => console.log('Storage I/O Error'));
 	},
 	response(r) {
 		if (r.status === 400 || r.status === 401) {
-			if (r.request.method !== 'POST' && r.request.url !== 'user') {
+			if (r.request.method !== 'POST' && r.request.url !== 'auth') {
 				App.logout();
 			}
 		}

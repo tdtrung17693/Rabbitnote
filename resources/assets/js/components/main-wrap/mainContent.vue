@@ -10,6 +10,7 @@
 </template>
 
 <style>
+
 .note-title {
     width: 100%;
     padding: 10px 20px;
@@ -41,7 +42,6 @@
 </style>
 
 <script>
-import io from '../../socket';
 import event from '../../eventbus';
 
 var updateTimeout = 0;
@@ -69,7 +69,7 @@ export default {
 
             updateTimeout = setTimeout(() => {
                 if (this.currentNote.id !== null) {
-                    this.$dispatch('note-changed');
+                    this.$dispatch('note:changed');
                 } else {
                     this.$dispatch('save-new-note');
                 }

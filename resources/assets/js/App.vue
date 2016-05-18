@@ -2,14 +2,14 @@
 
 div.overlay(v-show="waiting", style="position: fixed; background-color: #1F3240; width: 100%; height: 100%;z-index: 1000;")
     div.loader
-    
-div.app(v-show="authenticated") 
+
+div.app(v-show="authenticated")
     navigation(:notes.sync="notes", :current-note.sync="currentNote")
 
     main-wrap(:current-note.sync="currentNote")
 
 div.login(v-else)
-    login-form 
+    login-form
 
 </template>
 
@@ -83,14 +83,25 @@ div.login(v-else)
 
 import Vue from 'vue';
 import Storage from 'localforage';
+import Event from './eventbus';
 import navigation from './components/navigation/navigation.vue';
 import mainWrap from './components/main-wrap/index.vue';
 import store from './store';
 import loginForm from './components/login/index.vue';
+import io from './socket';
 
 export default {
     replace: false,
     components: { navigation, mainWrap, loginForm },
+
+    created() {
+        Event.on('note:saved', () =>  {
+            this.syncData()
+                .then(() => {
+                    this.currentNote = store._cache[this.currentNote.id];
+                });
+        });
+    },
 
     ready() {
         let token = '';
@@ -104,9 +115,11 @@ export default {
                     store.init()
                          .then((response) => {
                             this.currentNote = store.state.notes[0];
+                            io.init()
+                              .listenToUser(store.state.user.id);
                          })
-                         .catch(() => {
-                            this.authenticated = false;
+                         .catch(err => {
+                            this.logout();
                          });
                 }
             })
@@ -150,26 +163,7 @@ export default {
                  });
         },
         'user:logout': function () {
-            
-            Vue.http
-                .delete('auth')
-                .then(response => {
-                    Storage
-                        .removeItem('token')
-                        .then(() => {
-                            this.authenticated = false;
-                        })
-                        .catch(() => {
-                            console.error('Storage error');
-                        });        
-                })
-                .catch(() => {
-                    alert('Logout failed');
-                });
-            
-        },
-        'note:saved': function () {
-            this.getAllNotes();
+            this.logout();
         },
         'note:changed': function () {
             store.update(this.currentNote.id, this.currentNote);
@@ -180,6 +174,9 @@ export default {
                 .then((response) => {
                     this.getAllNotes();
                 });
+        },
+        'note:added': function () {
+
         }
     },
 
@@ -188,12 +185,24 @@ export default {
             store.getAll()
                  .then((response) => {
                     this.notes = response.data.data;
-                    
+
                     this.currentNote = this.notes[0] ? this.notes[0] : this.currentNote;
 
                     this.currentNote = (this.currentNote.title.length > 0) ? this.currentNote : response.data[0];
                 });
         },
+
+        syncData() {
+            return store
+                .syncNotes()
+                .then(r => {
+                    console.log(r.data);
+                })
+                .catch(err => {
+                    console.error(err);
+                });
+        },
+
         init() {
             store.init()
                  .then((response) => {
@@ -202,6 +211,23 @@ export default {
                  .catch(() => {
                     this.authenticated = false;
                  });
+        },
+        logout() {
+            Vue.http
+                .delete('auth')
+                .then(response => {
+                    Storage
+                        .removeItem('token')
+                        .catch(() => {
+                            console.error('Storage error');
+                        })
+                        .then(() => {
+                            this.authenticated = false;
+                        });
+                })
+                .catch(() => {
+                    alert('Logout failed');
+                });
         }
     }
 }
