@@ -17,7 +17,7 @@
         <!-- Libs -->
         <script src="https://cdn.jsdelivr.net/g/tether@1.2.0,jquery@2.2.2,bootstrap@3.3.6"></script>
 
-        <script src="{{ assets('js/vendor.bundle.js') }}"></script>
-        <script src="{{ assets('js/build.js') }}"></script>
+        <script src="{{ asset('js/vendor.bundle.js') }}"></script>
+        <script src="{{ asset('js/build.js') }}"></script>
     </body>
 </html>
