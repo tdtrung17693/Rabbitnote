@@ -1,5 +1,4 @@
     Options +FollowSymLinks
-    AllowOverride All
     
     RewriteEngine On
 
