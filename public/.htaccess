@@ -1,5 +1,6 @@
     Options +FollowSymLinks
-
+    AllowOverride All
+    
     RewriteEngine On
 
     # Redirect Trailing Slashes If Not A Folder...
