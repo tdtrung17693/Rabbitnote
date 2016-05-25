@@ -59,7 +59,7 @@ $api->version('v1', ['middleware' => ['api.throttle', 'cors'], 'limit' => 100, '
         return response()->json(compact('token'));
     });
 
-    $api->delete('auth', ['middleware' => 'api.auth', 'uses' => 'App\Http\Controllers\Api\UsersController@logout']);
+    $api->delete('auth', ['uses' => 'App\Http\Controllers\Api\UsersController@logout']);
 
     $api->get('/', function () {
         return response()->json('Rabbitnote API');

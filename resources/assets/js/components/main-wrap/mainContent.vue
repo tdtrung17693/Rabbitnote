@@ -1,22 +1,31 @@
 <template lang="jade">
 
 .main-content
-    input.note-title(name="note-title", type="text", v-model="currentNote.title", v-el:title-input, @input="saveNote")
+    tag-editor
+    input.note-title.note-input(name="note-title", type="text", v-model="currentNote.title", v-el:title-input, @input="saveNote", placeholder="Title...")
 
     .note-editor-wrap
-        textarea.note-editor(name="note-text", v-model="currentNote.content", v-el:content-input, @input="saveNote")
+        textarea.note-editor(name="note-text", v-model="currentNote.content", v-el:content-input, @input="saveNote", placeholder="Content...")
 
 
 </template>
 
 <style>
 
-.note-title {
+.note-input {
     width: 100%;
-    padding: 10px 20px;
     border: none;
     border-bottom: 1px solid #CCC;
     outline: none;
+}
+
+.note-tag {
+    padding: 0px 20px;
+    font-size: 14px;
+}
+
+.note-title {
+    padding: 10px 20px;
     font-size: 25px;
 }
 
@@ -24,7 +33,7 @@
     width: 100%;
     height: auto;
     position: absolute;
-    top: 58px;
+    top: 100px;
     bottom: 0;
 }
 
@@ -43,10 +52,12 @@
 
 <script>
 import event from '../../eventbus';
+import TagEditor from '../tag-editor/TagEditor.vue';
 
 var updateTimeout = 0;
 
 export default {
+    components: { TagEditor },
     props: {
         currentNote: {
             twoWay: true

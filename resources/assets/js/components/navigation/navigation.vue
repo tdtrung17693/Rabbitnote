@@ -13,7 +13,7 @@ nav.navbar.navbar-light.navbar-app
         li.nav-item.dropdown
             a.nav-link.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-haspopup='true', aria-expanded='false') {{ user.email }}
             .dropdown-menu
-                a.dropdown-item Settings 
+                a.dropdown-item Settings
                 a.dropdown-item(@click.prevent="logout") Logout
 
 
@@ -45,7 +45,10 @@ export default {
             var note = {
                 id: null,
                 title: '',
-                content: ''
+                content: '',
+                tags: {
+                    data: []
+                }
             };
 
             this.notes.unshift(note);
@@ -54,7 +57,7 @@ export default {
 
             event.emit('make-new-note');
         },
-        
+
         trashNote: function (note, $event) {
             $event.preventDefault();
         },

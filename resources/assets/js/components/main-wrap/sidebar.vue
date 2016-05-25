@@ -67,6 +67,7 @@ export default {
     methods: {
         openNote(note) {
             this.currentNote = note;
+            this.TagManager.init(note.tags.data);
         }
     },
     filters: {

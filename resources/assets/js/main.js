@@ -2,9 +2,12 @@ import Vue from 'vue';
 import VueResource from 'vue-resource';
 import App from './App.vue';
 import Storage from 'localforage';
+import TagManager from './Tag/TagManager';
 
 Vue.config.debug = true;
 Vue.use(VueResource);
+
+Vue.TagManager = TagManager;
 
 Vue.http.options.root = "http://api.rabbitnote.dev";
 

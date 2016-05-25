@@ -104,6 +104,7 @@ export default {
     },
 
     ready() {
+        console.log(this.$el);
         let token = '';
 
         Storage.getItem('token')
@@ -225,8 +226,8 @@ export default {
                             this.authenticated = false;
                         });
                 })
-                .catch(() => {
-                    alert('Logout failed');
+                .catch(e => {
+                    this.authenticated = false;
                 });
         }
     }
